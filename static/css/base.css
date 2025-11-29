@@ -1,0 +1,289 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+:root {
+    --verde_primario: #2A7A2E;
+    --azul_destaque: #0098A6;
+    --verde_secundario: #49A34D;
+    --azul_apoio: #006E8C;
+    --cinza_texto: #333333;
+    --cinza_fundo: #F5F7F5;
+    --cinza_secundario: #666666;
+    --titulos: "Montserrat", sans-serif;
+    --paragrafos: "Open Sans", sans-serif;
+}
+
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;            /* PERMITE QUEBRA DE LINHA: essencial para o menu descer */
+    padding: 15px 30px;
+    background-color: var(--cinza_fundo);
+}
+
+header a {
+    text-decoration: none;
+}
+
+/* 1. Imagem (Logo) */
+#logo-link {
+    width: 10%;
+}
+
+#logo-link img {
+    width: 100%;
+}
+
+header i {
+    font-size: 1.3rem;
+}
+
+/* 2. Barra de Pesquisa (40% da largura) */
+.barra_pesquisa {
+    width: 50%;
+}
+
+.barra_pesquisa form {
+    display: flex;
+    width: 100%;
+}
+
+.barra_pesquisa input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-right: none;
+    border-radius: 20px 0 0 20px; /* Cantos arredondados */
+    outline: none;
+    font-size: 1.4rem;
+    color: var(--verde_primario);
+}
+
+.barra_pesquisa button {
+    padding: 0 20px;
+    border: 1px solid #ddd;
+    background-color: #f8f9fa;
+    border-radius: 0 20px 20px 0;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.barra_pesquisa button:hover {
+    background-color: #e2e6ea;
+}
+
+/* 3. Nav Superior (Ícones e Login) */
+header nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: var(--verde_primario);
+    font-size: 1.3rem;
+}
+
+header nav li {
+    list-style: none;
+    margin: auto 1px;
+    cursor: pointer;
+}
+
+header nav:nth-of-type(1) a {
+    text-decoration: none;
+    color: #333;
+}
+
+header nav:nth-of-type(1) li {
+    padding: 10px;
+    border-radius: 50%;
+    text-align: center;
+    vertical-align: center;
+}
+
+header nav:nth-of-type(1) li:nth-of-type(1) {
+    border-radius: 10px;
+}
+
+header nav:nth-of-type(1) li:hover {
+    background-color: var(--verde_secundario);
+}
+
+/* 4. Nav Inferior (Categorias - Nova Linha) */
+/* Seleciona apenas a segunda tag NAV */
+header nav:nth-of-type(2) {
+    width: 100%;                /* Ocupa toda a largura */
+    margin-top: 10px;           /* Espaço entre a parte de cima e as categorias */
+    padding-top: 15px;
+    border-top: 1px solid var(--cinza_secundario); /* Linha divisória opcional */
+    
+    /* Centralizando as categorias (opcional) */
+    display: flex;
+    justify-content: space-evenly;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+#categorias a {
+    color: var(--verde_primario);
+}
+
+main {
+    display: grid;
+    grid-template-areas: 
+        "produtos produtos produtos"
+        "pagination pagination pagination";
+    gap: 20px;
+    padding: 50px 150px;
+    justify-content: center;
+    justify-items: center;
+}
+
+/* Container Geral */
+.main-footer {
+    background-color: var(--azul_apoio);
+    color: white;
+    width: 100%;
+    font-size: 14px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- Layout Superior (Grid) --- */
+.footer-top {
+    padding: 40px 0;
+    display: grid;
+    /* Cria 5 colunas. A primeira e a última são um pouco mais largas */
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 30px;
+}
+
+/* Estilos da Coluna de Marca */
+.footer-logo {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.footer-logo img {
+    max-width: 260px;
+}
+
+.brand-col h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.brand-col p {
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* Estilos de Links e Títulos */
+.footer-col h4 {
+    font-size: 16px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.footer-col ul {
+    list-style: none;
+}
+
+.footer-col ul li {
+    margin-bottom: 10px;
+}
+
+.footer-col ul li a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-col ul li a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* Estilos de Contato */
+.contact-list li {
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
+    gap: 10px;
+}
+
+/* --- Layout Inferior (Copyright) --- */
+.footer-bottom {
+    background-color: var(--dark-bg);
+    padding: 30px 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.bottom-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.legal-info p {
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.legal-info .disclaimer {
+    margin-top: 10px;
+    font-style: italic;
+    opacity: 0.7;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 992px) {
+    .footer-top {
+        grid-template-columns: 1fr 1fr; /* 2 colunas em tablets */
+    }
+    .brand-col {
+        grid-column: span 2; /* Marca ocupa largura total */
+    }
+    .contact-col {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 600px) {
+    .footer-top {
+        grid-template-columns: 1fr; /* 1 coluna no celular */
+        text-align: center;
+    }
+    .brand-col, .contact-col {
+        grid-column: span 1;
+    }
+    
+    .contact-list li {
+        justify-content: center;
+    }
+
+    .bottom-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .payment-badges {
+        align-items: center;
+    }
+}

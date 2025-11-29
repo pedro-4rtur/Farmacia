@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenMed+</title>
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    {% block links %} {% endblock %}
+</head>
+<body>
+    <header>
+        <a href="{% url 'pagina_principal' %}" id="logo-link"><img src="{% static 'images/logo.png' %}" alt="Logo GreenMed+"></a>
+        <div class="barra_pesquisa">
+            <form method="GET" action="{% url 'pagina_principal' %}">
+                <input type="text" placeholder="Procure aqui o que precisa">
+                <button type="submit"><i class="bi bi-search"></i></button>
+            </form>
+        </div>
+        <nav>
+            <li><a href="#"><i class="bi bi-person"></i>Login / Cadastro</a></li>
+            <li><a href="#"><i class="bi bi-heart"></i></a></li>
+            <li><a href="#"><i class="bi bi-bag"></i></a></li>
+            <li><a href="#"><i class="bi bi-kanban"></i></a></li>
+            <li><a href="#"><i class="bi bi-gear"></i></a></li>
+        </nav>
+        <nav id="categorias">
+            {% block categorias %}
+            {% endblock %}
+        </nav>
+    </header>
+    <main>
+        {% block conteudo %}
+        {% endblock %}
+    </main>
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-col brand-col">
+                    <div class="footer-logo">
+                        <img src="{% static '/images/logo_footer.png' %}" alt="Logo GreenMed+">
+                    </div>
+                    <h3>Sua saúde conectada ao bem-estar.</h3>
+                    <p>
+                        A GreenMed+ é a sua parceira de bem-estar. Conectamos você à saúde moderna, 
+                        com atendimento humanizado e a mais alta tecnologia para cuidar de você e sua família.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4>Categorias</h4>
+                    <ul>
+                        {% block categorias_footer %}
+                        {% endblock %}
+                    </ul>
+                </div>
+                <div class="footer-col contact-col">
+                    <h4>Fale Conosco</h4>
+                    <ul class="contact-list">
+                        <li><i class="bi bi-whatsapp"></i> (87) 99999-9999</li>
+                        <li><i class="bi bi-envelope"></i> contato@greenmed.com.br</li>
+                        <li><i class="bi bi-clock"></i> Seg a Sex: 08h às 20h</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container bottom-content">
+                <div class="legal-info">
+                    <p class="disclaimer">As informações contidas neste site não substituem consultas médicas. Em caso de dúvidas, procure orientação profissional.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

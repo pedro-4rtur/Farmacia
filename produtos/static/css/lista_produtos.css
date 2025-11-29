@@ -1,0 +1,158 @@
+.product-card {
+    background-color: #fff;
+    width: 284px; /* Largura típica de cards nesse estilo */
+    border-radius: 8px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,.12);
+    overflow: hidden; /* Garante que nada saia das bordas arredondadas */
+    /* position: relative; */
+    transition: box-shadow 0.3s ease;
+    border: 1px solid transparent;
+}
+
+/* Efeito hover opcional no card inteiro */
+.product-card:hover {
+     box-shadow: 0 4px 8px 0 rgba(0,0,0,.15);
+}
+
+/* --- Área da Imagem e Ícone --- */
+
+.image-container {
+    position: relative;
+    background-color: #f8f8f8; /* Fundo cinza claro atrás da imagem */
+    height: 260px; /* Altura fixa para alinhar cards em grid */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Garante que a imagem inteira apareça sem distorcer */
+    mix-blend-mode: multiply; /* Ajuda a imagem a se mesclar melhor com o fundo cinza */
+}
+
+/* Botão de Favoritos (Coração) */
+.favorite-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%; /* Cria o círculo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    color: var(--cinza_secundario); /* Cor inicial do coração (cinza) */
+    transition: all 0.2s ease;
+}
+
+.favorite-btn i {
+    fill: transparent; /* Começa vazio */
+    transition: all 0.2s ease;
+    font-size: 1.3rem;
+}
+
+/* Efeito ao passar o mouse no favoritos */
+.favorite-btn:hover {
+    color: var(--azul_destaque); /* Cor azul padrão do site ao focar */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Exemplo de estado "ativo/favoritado" (você precisaria de JS para alternar essa classe) */
+.favorite-btn.active i {
+    fill: #3483fa;
+    stroke: #3483fa;
+}
+
+
+/* --- Área de Conteúdo --- */
+
+.card-content {
+    padding: 16px;
+    text-align: left;
+    border-top: 1px solid #eee; /* Linha sutil separando imagem do texto */
+}
+
+/* Título do Produto */
+.product-title {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--cinza_texto);
+    margin: 0 0 12px 0;
+    line-height: 1.3;
+    
+    /* Limita a 2 linhas e adiciona "..." se for muito longo */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* --- Seção de Preços --- */
+.price-section {
+    margin-bottom: 10px;
+}
+
+.current-price {
+    display: block;
+    font-size: 24px;
+    font-weight: 600; /* Semi-bold */
+    color: var(--cinza_texto);
+    line-height: 1;
+}
+
+/* --- Área do Cupom --- */
+.coupon-container {
+    min-height: 24px; /* Reserva espaço mesmo se não tiver cupom, para alinhar cards */
+    display: flex;
+    align-items: center;
+}
+
+.coupon-badge {
+    display: inline-block;
+    /* A cor exata do azul claro do exemplo */
+    background-color: var(--cinza_fundo); 
+    /* Cor do texto azul escuro */
+    color: var(--azul_destaque); 
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.container-produtos {
+    grid-area: produtos;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: space-between;
+}
+
+.pagination {
+    padding-top: 55px;
+    text-align: center;
+    grid-area: pagination;
+}
+
+.pagination a {
+    margin: 0px 10px;
+    text-decoration: none;
+    color: var(--verde_primario);
+}
+
+.pagination span.current {
+    color: var(--cinza_texto);
+    padding: 10px;
+    background-color: var(--cinza_fundo);
+    border-radius: 10px;
+    box-shadow: 1px 1px 5px var(--cinza_texto);
+    margin: 0px 10px;
+}

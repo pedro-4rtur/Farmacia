@@ -15,6 +15,7 @@ class Produto(models.Model):
     valor = models.FloatField()
     categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT, related_name='categoria_produto')
     descricao = models.TextField(blank=True, null=True)
+    imagem = models.ImageField(upload_to='produtos/', blank=True, null=True)
 
     def __str__(self):
         return self.nome
