@@ -9,6 +9,10 @@
     border: 1px solid transparent;
 }
 
+.container-produtos > a {
+    text-decoration: none;
+}
+
 /* Efeito hover opcional no card inteiro */
 .product-card:hover {
      box-shadow: 0 4px 8px 0 rgba(0,0,0,.15);

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Produto, Categoria
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.core.paginator import Paginator
 
 # Create your views here.
@@ -24,3 +24,8 @@ class ListViewProdutos(ListView):
         context["page_obj"] = paginator.get_page(page_number)
 
         return context
+    
+
+class DetailViewProduto(DetailView):
+    model = Produto
+    template_name = 'detalhes_produto.html'
