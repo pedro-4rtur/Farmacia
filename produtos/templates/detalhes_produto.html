@@ -1,5 +1,67 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/detalhes_produto.css' %}">
+{% endblock %}
+
+{% if categorias %}
+{% block categorias %}
+    {% for categoria in categorias %}
+        <li><a href="/?categoria={{ categoria.nome }}">{{ categoria.nome }}</a></li>
+    {% endfor %}
+{% endblock %}
+{% endif %}
 
 {% block conteudo %}
+<div class="grid-container">
+    <div class="rota">
+        <nav>
+            <li><a href="{% url 'pagina_principal' %}">Início</a></li>
+            <li><i class="bi bi-chevron-right"></i></li>
+            <li><a href="/?categoria={{ produto.categoria }}">{{ object.categoria }}</a></li>
+            <li><i class="bi bi-chevron-right"></i></li>
+            <li><a href="#">{{ object.nome }}</a></li>
+        </nav>
+    </div>
+    <div class="flex-container">
+        <div class="container-imagem"><img src="{{ object.imagem.url }}" alt="{{ object.imagem.url }}"></div>
+        <div class="info-produto">
+            <h2>{{ object.nome }}</h2>
+            <span>R$ {{ object.valor }}</span>
+            <form action="">
+                <button type="submit">Comprar</button>
+            </form>
+            <div class="container-descricao">
+                <h3>Descrição do produto:</h3>
+                {% if object.descricao != "" %}
+                    <p>{{ object.descricao }}</p>
+                {% else %}
+                    <p>Este produto não possui descrição.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="comentarios">
+        <h4>Avaliações</h4>
+        <hr>
+        {% for comentario in comentarios %}
+            <div class="card-comentario">
+                <div class="card-header">
+                    <h5>{{ comentario.cliente }}</h5> 
+                    <p>{{ comentario.data }}</p>
+                </div>
+                <p>{{ comentario.comentario }}</p>
+            </div>
+        {% empty %}
+            <h2>Este produto ainda não tem comentários 😓</h2>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
 
+{% block categorias_footer %}
+    {% for categoria in categorias %}
+        <li><a href="/?categoria={{ categoria.nome }}">{{ categoria.nome }}</a></li>
+    {% endfor %}
 {% endblock %}

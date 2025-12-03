@@ -10,7 +10,7 @@
 {% if categorias %}
 {% block categorias %}
     {% for categoria in categorias %}
-        <li><a href="?categoria={{ categoria.nome }}">{{ categoria.nome }}</a></li>
+        <li><a href="/?categoria={{ categoria.nome }}">{{ categoria.nome }}</a></li>
     {% endfor %}
 {% endblock %}
 {% endif %}
@@ -18,8 +18,8 @@
 {% block conteudo %}
     <div class="container-produtos">
     {% for produto in page_obj %}
-        <a href="{% url 'pagina_produto' produto.pk %}">
-            <div class="product-card">
+        <div class="product-card">
+            <a href="{% url 'pagina_produto' produto.pk %}">
                 <div class="image-container">
                     <button class="favorite-btn" aria-label="Adicionar aos favoritos">
                         <i class="bi bi-heart"></i>
@@ -37,8 +37,8 @@
                         <span class="coupon-badge">R$ 20 OFF BB VISA</span>
                     </div>
                 </div>
-            </div>
-        </a>
+                </a>
+        </div>
     {% empty %}
         <h2>Não encontramos nenhum produto 😓</h2>
     {% endfor %}

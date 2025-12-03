@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from .models import Produto, Categoria
+from .models import Produto, Categoria, Comentario
 from django.views.generic import ListView, DetailView
 from django.core.paginator import Paginator
+from .forms import ProdutoModelForm
 
 # Create your views here.
 class ListViewProdutos(ListView):
@@ -29,3 +30,10 @@ class ListViewProdutos(ListView):
 class DetailViewProduto(DetailView):
     model = Produto
     template_name = 'detalhes_produto.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categorias'] = Categoria.objects.all()
+        context['comentarios'] = Comentario.objects.filter(produto__nome=context['object'].nome)
+
+        return context

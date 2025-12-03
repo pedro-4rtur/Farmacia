@@ -1,3 +1,19 @@
+main {
+    grid-template-areas: 
+        "produtos produtos produtos"
+        "pagination pagination pagination";
+    gap: 20px;
+}
+
+.container-produtos {
+    grid-area: produtos;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: start;
+    justify-items: center;
+}
+
 .product-card {
     background-color: #fff;
     width: 284px; /* Largura típica de cards nesse estilo */
@@ -9,7 +25,7 @@
     border: 1px solid transparent;
 }
 
-.container-produtos > a {
+.product-card > a {
     text-decoration: none;
 }
 
@@ -132,18 +148,13 @@
     letter-spacing: 0.5px;
 }
 
-.container-produtos {
-    grid-area: produtos;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 40px;
-    justify-content: space-between;
-}
-
 .pagination {
     padding-top: 55px;
     text-align: center;
     grid-area: pagination;
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 .pagination a {

@@ -135,13 +135,9 @@ header nav:nth-of-type(2) {
 
 main {
     display: grid;
-    grid-template-areas: 
-        "produtos produtos produtos"
-        "pagination pagination pagination";
-    gap: 20px;
     padding: 50px 150px;
-    justify-content: center;
-    justify-items: center;
+    justify-content: stretch;
+    width: 100%;
 }
 
 /* Container Geral */
