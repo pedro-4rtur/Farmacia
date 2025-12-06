@@ -27,6 +27,7 @@ main {
 
 .product-card > a {
     text-decoration: none;
+    z-index: 0;
 }
 
 /* Efeito hover opcional no card inteiro */
@@ -70,12 +71,17 @@ main {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     color: var(--cinza_secundario); /* Cor inicial do coração (cinza) */
     transition: all 0.2s ease;
+    z-index: 10;
 }
 
 .favorite-btn i {
     fill: transparent; /* Começa vazio */
     transition: all 0.2s ease;
     font-size: 1.3rem;
+}
+
+i.bi-heart-fill {
+    color: rgba(255, 0, 0, 0.534);
 }
 
 /* Efeito ao passar o mouse no favoritos */

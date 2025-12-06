@@ -100,7 +100,7 @@ header nav:nth-of-type(1) a {
     color: #333;
 }
 
-header nav #contagem-cesta {
+header nav #contagem-cesta, header nav #contagem-favorito {
     position: absolute;
     font-size: 0.8rem;
     padding: 5px;

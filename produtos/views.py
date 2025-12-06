@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 import json
 from gestao.models import Sacola, ItemSacola
+from contas.models import Favorito
 
 # Create your views here.
 class ListViewProdutos(ListView):
@@ -31,6 +32,12 @@ class ListViewProdutos(ListView):
             qtd_itens_sacola = ItemSacola.objects.filter(sacola=sacola[0]).count()
             context['itens_sacola'] = qtd_itens_sacola
 
+        favoritos = Favorito.objects.filter(id_cliente=self.request.user).values_list('id_produto', flat=True)
+        context['favoritos'] = {
+            'lista': list(favoritos),
+            'quantidade': len(list(favoritos))
+        }
+
         return context
     
 
@@ -52,6 +59,9 @@ class DetailViewProduto(DetailView):
         if ItemSacola.objects.filter(produto__nome=context['object']):
             context['adicionado_cesta'] = True
 
+        favoritos = Favorito.objects.filter(id_cliente=self.request.user).values_list('id_produto', flat=True)
+        context['favoritos'] = len(list(favoritos))
+
         return context
     
 
@@ -64,8 +74,6 @@ def adicionar_cesta(request):
         try:
             data = json.loads(request.body)
             produto_id = data.get('produto_id')
-
-            print(produto_id)
             
             # 2. Busca o produto
             produto = get_object_or_404(Produto, id=produto_id)
@@ -125,4 +133,59 @@ def retirar_cesta(request):
         except Exception as e:
             return JsonResponse({'sucesso': False, 'erro': str(e)}, status=500)
     
+    return JsonResponse({'sucesso': False, 'erro': 'Método inválido'}, status=400)
+
+
+def adicionar_favorito(request):
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return JsonResponse({'sucesso': False, 'erro': 'Você precisa fazer login para adicionar itens.'}, status=403)
+        
+        try:
+            data = json.loads(request.body)
+            produto_id = data.get('produto_id')
+
+            produto = get_object_or_404(Produto, id=produto_id)
+            
+            favorito, created = Favorito.objects.get_or_create(id_produto=produto, id_cliente=request.user)
+            if not created:
+                favorito.save()
+
+            contagem = Favorito.objects.filter(id_cliente=request.user).count()
+
+            return JsonResponse({
+                'sucesso': True,
+                'contagemFavoritos': contagem,
+            })
+
+        except Exception as e:
+            return JsonResponse({'sucesso': False, 'erro': str(e)}, status=500)
+
+    return JsonResponse({'sucesso': False, 'erro': 'Método inválido'}, status=400)
+
+
+def remover_favorito(request):
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return JsonResponse({'sucesso': False, 'erro': 'Você precisa fazer login para adicionar itens.'}, status=403)
+        
+        try:
+            data = json.loads(request.body)
+            produto_id = data.get('produto_id')
+
+            produto = get_object_or_404(Produto, id=produto_id)
+            
+            favorito = Favorito.objects.filter(id_produto=produto, id_cliente=request.user)
+            favorito.delete()
+
+            contagem = Favorito.objects.filter(id_cliente=request.user).count()
+
+            return JsonResponse({
+                'sucesso': True,
+                'contagemFavoritos': contagem,
+            })
+
+        except Exception as e:
+            return JsonResponse({'sucesso': False, 'erro': str(e)}, status=500)
+
     return JsonResponse({'sucesso': False, 'erro': 'Método inválido'}, status=400)

@@ -1,29 +1,29 @@
 function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
             }
-            return cookieValue;
         }
+    }
+    return cookieValue;
+}
 
 document.querySelector(".info-produto").addEventListener("click", function(e) {
     const botaoAdicionar = document.querySelector("#btn-adicionar-cesta");
     const botaoRemover = document.querySelector("#btn-retirar-cesta");
 
+    const csrftoken = getCookie('csrftoken');
+
     if(e.target.closest("#btn-adicionar-cesta")) {
         let botaoClicado = e.target.closest("#btn-adicionar-cesta");
         const produtoId = botaoClicado.dataset.produtoId;
         const url = "/cesta/adicionar";
-
-        const csrftoken = getCookie('csrftoken');
 
         // Faz a requisição para o backend
         fetch(url, {
@@ -61,7 +61,7 @@ document.querySelector(".info-produto").addEventListener("click", function(e) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken'), // Mesma função getCookie usada antes
+                'X-CSRFToken': csrftoken, // Mesma função getCookie usada antes
             },
             body: JSON.stringify({'produto_id': produtoId})
         })
