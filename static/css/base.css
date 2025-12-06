@@ -92,11 +92,24 @@ header nav li {
     list-style: none;
     margin: auto 1px;
     cursor: pointer;
+    position: relative;
 }
 
 header nav:nth-of-type(1) a {
     text-decoration: none;
     color: #333;
+}
+
+header nav #contagem-cesta {
+    position: absolute;
+    font-size: 0.8rem;
+    padding: 5px;
+    border-radius: 50%;
+    bottom: -5px;
+    right: -3px;
+    text-align: center;
+    background-color: var(--verde_secundario);
+    color: white;
 }
 
 header nav:nth-of-type(1) li {

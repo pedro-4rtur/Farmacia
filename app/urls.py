@@ -18,10 +18,12 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from produtos.views import ListViewProdutos, DetailViewProduto
+from produtos.views import ListViewProdutos, DetailViewProduto, adicionar_cesta, retirar_cesta
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', ListViewProdutos.as_view(), name='pagina_principal'),
-    path('<int:pk>/', DetailViewProduto.as_view(), name='pagina_produto')
+    path('<int:pk>/', DetailViewProduto.as_view(), name='pagina_produto'),
+    path('cesta/adicionar', adicionar_cesta, name="adicionar_cesta"),
+    path('cesta/remover', retirar_cesta, name='remover_cesta')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

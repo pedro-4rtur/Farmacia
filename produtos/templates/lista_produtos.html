@@ -2,10 +2,10 @@
 {% load static %}
 
 {% block links %}
-
-<link rel="stylesheet" href="{% static 'css/lista_produtos.css' %}">
-
+    <link rel="stylesheet" href="{% static 'css/lista_produtos.css' %}">
 {% endblock %}
+
+{% block sacola %} <span id="contagem-cesta">{{ itens_sacola }}</span> {% endblock %}
 
 {% if categorias %}
 {% block categorias %}

@@ -3,7 +3,10 @@
 
 {% block links %}
     <link rel="stylesheet" href="{% static 'css/detalhes_produto.css' %}">
+    <script src="{% static 'javascript/detalhes_produto.js' %}" defer></script>
 {% endblock %}
+
+{% block sacola %} <span id="contagem-cesta">{{ itens_sacola }}</span> {% endblock %}
 
 {% if categorias %}
 {% block categorias %}
@@ -29,9 +32,11 @@
         <div class="info-produto">
             <h2>{{ object.nome }}</h2>
             <span>R$ {{ object.valor }}</span>
-            <form action="">
-                <button type="submit">Comprar</button>
-            </form>
+            
+            <button class="{% if adicionado_cesta %} oculto {% endif %}" id="btn-adicionar-cesta" data-produto-id="{{ object.id }}" type="button">Adicionar à cesta <i class="bi bi-basket3"></i></button>
+
+            <button class="{% if not adicionado_cesta %} oculto {% endif %}" id="btn-retirar-cesta" data-produto-id="{{ object.id }}" type="button">Retirar da cesta</button>
+            
             <div class="container-descricao">
                 <h3>Descrição do produto:</h3>
                 {% if object.descricao != "" %}
