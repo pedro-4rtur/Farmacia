@@ -6,7 +6,7 @@
     <script src="{% static 'javascript/lista_produtos.js' %}" defer></script>
 {% endblock %}
 
-{% block favorito %} <span id="contagem-favorito">{{ favoritos.quantidade }}</span> {% endblock %}
+{% block favorito %} <span id="contagem-favorito">{{ favoritos|length }}</span> {% endblock %}
 
 {% block sacola %} <span id="contagem-cesta">{{ itens_sacola }}</span> {% endblock %}
 
@@ -24,7 +24,7 @@
         <div class="product-card">
             <div class="image-container">
                 <button class="favorite-btn" aria-label="Adicionar aos favoritos" data-produto-id="{{ produto.id }}">
-                    <i class="bi bi-heart{% if produto.id in favoritos.lista %}-fill{% endif %}"></i>
+                    <i class="bi bi-heart{% if produto.id in favoritos %}-fill{% endif %}"></i>
                 </button>
                 <a href="{% url 'pagina_produto' produto.pk %}">
                     <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">

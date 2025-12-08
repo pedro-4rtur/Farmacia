@@ -29,3 +29,8 @@ class Comentario(models.Model):
 
     def __str__(self):
         return f'comentario no produto ${self.produto}'
+    
+
+class Favorito(models.Model):
+    id_produto = models.OneToOneField(to=Produto, on_delete=models.CASCADE, related_name='produto_favorito')
+    id_cliente = models.ForeignKey(to="contas.Cliente", on_delete=models.CASCADE, related_name='cliente_favorito')

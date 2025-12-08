@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/lista_favoritos.css' %}">
+    <script src="{% static 'javascript/lista_favoritos.js' %}" defer></script>
+    <script src="{% static 'javascript/lista_produtos.js' %}" defer></script>
+{% endblock %}
+
+{% block favorito %} 
+    <span id="contagem-favorito">{{ favoritos|length }}</span> 
+{% endblock %}
+
+{% block sacola %} <span id="contagem-cesta">{{ itens_sacola }}</span> {% endblock %}
+
+{% if categorias %}
+{% block categorias %}
+    {% for categoria in categorias %}
+        <li><a href="/?categoria={{ categoria.nome }}">{{ categoria.nome }}</a></li>
+    {% endfor %}
+{% endblock %}
+{% endif %}
+
+
+{% block conteudo %}
+    <div class="grid-container">
+        <div class="rota">
+            <nav>
+                <li><a href="{% url 'pagina_principal' %}">Início</a></li>
+                <li><i class="bi bi-chevron-right"></i></li>
+                <li><a href="#">Meus favoritos ({{ favoritos|length }} itens)</a></li>
+            </nav>
+        </div>
+        <div class="carrossel">
+            {% if favoritos|length > 0 %}
+                <div class="prev-button">
+                    <button type="button"><i class="bi bi-chevron-left"></i></button>
+                </div>
+            {% endif %}
+            <div class="container-produtos">
+                {% for produto in produtos_favoritos %}
+                    <div class="product-card">
+                        <div class="image-container">
+                            <button class="favorite-btn" aria-label="Adicionar aos favoritos" data-produto-id="{{ produto.id }}">
+                                <i class="bi bi-heart{% if produto.id in favoritos %}-fill{% endif %}"></i>
+                            </button>
+                            <a href="{% url 'pagina_produto' produto.pk %}">
+                                <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
+                            </a>
+                        </div>
+                        <a href="{% url 'pagina_produto' produto.pk %}">
+                            <div class="card-content">
+                                <h2 class="product-title">
+                                    {{ produto.nome }}
+                                </h2>
+                                <div class="price-section">
+                                    <span class="current-price">R$ {{ produto.valor }}</span>
+                                </div>
+                                <div class="coupon-container">
+                                    <span class="coupon-badge">R$ 20 OFF BB VISA</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% empty %}
+                    <h2>Não encontramos nenhum produto 😓</h2>
+                {% endfor %}
+            </div>
+            {% if produtos_favoritos|length > 0 %}
+                <div class="next-button">
+                    <button type="button"><i class="bi bi-chevron-right"></i></button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% if categorias %}
+{% block categorias_footer %}
+    {% for categoria in categorias %}
+        <li><a href="#">{{ categoria.nome }}</a></li>
+    {% endfor %}
+{% endblock %}
+{% endif %}

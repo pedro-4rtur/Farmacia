@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Categoria, Produto, Comentario
+from .models import Categoria, Produto, Comentario, Favorito
 
 # Register your models here.
 class CategoriaAdmin(admin.ModelAdmin):
@@ -15,6 +15,12 @@ class ComentarioAdmin(admin.ModelAdmin):
     search_fields = ['produto']
 
 
+class FavoritoAdmin(admin.ModelAdmin):
+    list_display = ['id_produto', 'id_cliente']
+    search_fields = ['id_produto', 'id_cliente']
+
+
 admin.site.register(Categoria, CategoriaAdmin)
 admin.site.register(Produto, ProdutoAdmin)
 admin.site.register(Comentario, ComentarioAdmin)
+admin.site.register(Favorito, FavoritoAdmin)

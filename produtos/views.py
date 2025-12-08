@@ -1,11 +1,10 @@
 from django.shortcuts import get_object_or_404
-from .models import Produto, Categoria, Comentario
+from .models import Produto, Categoria, Comentario, Favorito
 from django.views.generic import ListView, DetailView
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 import json
 from gestao.models import Sacola, ItemSacola
-from contas.models import Favorito
 
 # Create your views here.
 class ListViewProdutos(ListView):
@@ -33,10 +32,7 @@ class ListViewProdutos(ListView):
             context['itens_sacola'] = qtd_itens_sacola
 
         favoritos = Favorito.objects.filter(id_cliente=self.request.user).values_list('id_produto', flat=True)
-        context['favoritos'] = {
-            'lista': list(favoritos),
-            'quantidade': len(list(favoritos))
-        }
+        context['favoritos'] = list(favoritos)
 
         return context
     
@@ -189,3 +185,27 @@ def remover_favorito(request):
             return JsonResponse({'sucesso': False, 'erro': str(e)}, status=500)
 
     return JsonResponse({'sucesso': False, 'erro': 'Método inválido'}, status=400)
+
+
+class ListViewFavorito(ListView):
+    model = Favorito
+    template_name = 'lista_favoritos.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["categorias"] = Categoria.objects.all()
+        
+        sacola = Sacola.objects.filter(usuario=self.request.user)
+        if sacola:
+            qtd_itens_sacola = ItemSacola.objects.filter(sacola=sacola[0]).count()
+            context['itens_sacola'] = qtd_itens_sacola
+
+        favoritos = Favorito.objects.filter(id_cliente=self.request.user).values_list('id_produto', flat=True)
+
+        produtos_favoritos = Produto.objects.filter(id__in=list(favoritos))
+
+        context['produtos_favoritos'] = produtos_favoritos
+        context['favoritos'] = list(favoritos)
+
+        return context
