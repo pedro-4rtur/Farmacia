@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/cesta.css' %}">
+    <script src="{% static 'javascript/cesta.js' %}" defer></script>
+{% endblock %}
+
+{% block favorito %} 
+    <span id="contagem-favorito">{{ favoritos|length }}</span> 
+{% endblock %}
+
+{% block cesta %} <span id="contagem-cesta">{{ qtd_itens_cesta }}</span> {% endblock %}
+
+{% block categorias %}
+    {% for categoria in categorias %}
+        <li><a href="/?categoria={{ categoria.nome }}">{{ categoria.nome }}</a></li>
+    {% endfor %}
+{% endblock %}
+
+{% block conteudo %}
+    <div class="grid-container">
+        <div class="rota">
+                <nav>
+                    <li><a href="{% url 'pagina_principal' %}">Início</a></li>
+                    <li><i class="bi bi-chevron-right"></i></li>
+                    <li><a href="#">Minha cesta ({{ qtd_itens_cesta }} itens)</a></li>
+                </nav>
+            </div>
+        <div class="cart-layout">
+            <section class="cart-items-container">
+                <div class="cart-header-labels">
+                    <div>Produto</div>
+                    <div style="text-align: left">Preço Unit.</div>
+                    <div style="text-align: center">Qtd.</div>
+                    <div style="text-align: right">Total</div>
+                </div>
+        
+                {% for produto in produtos %}
+                    <article class="cart-item">
+                        <div class="item-info">
+                            <img src="{{ produto.produto.imagem.url }}" alt="{{ produto.produto.nome }}" class="item-image">
+                            <div class="item-details">
+                                <h3>{{ produto.produto.nome }}</h3>
+                            </div>
+                        </div>
+            
+                        <div class="item-price-unit" style="text-align: center;">
+                            R$ {{ produto.produto.valor }}
+                            
+                        </div>
+            
+                        <div class="item-controls" style="justify-content: center">
+                            <div class="quantity-selector">
+                                <button class="qty-btn" data-operacao="-">-</button>
+                                <input type="number" value="{{ produto.quantidade }}" class="qty-input" readonly min="1" max="{{ produto.produto.quantidade }}" data-preco-unitario="{{ produto.produto.valor }}">
+                                <button class="qty-btn" data-operacao="+">+</button>
+                            </div>
+                            <button class="remove-btn" title="Remover item" data-produto-id="{{ produto.produto.id }}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+            
+                        <div class="item-total-price">
+                            R$ {{ produto.get_total }}
+                        </div>
+                    </article>
+                {% empty %}
+                    <h2>Você ainda não tem produtos na cesta 😓</h2>
+                {% endfor %}
+            </section>
+        
+            <aside class="order-summary">
+                <h2 class="summary-title">Resumo do pedido</h2>
+        
+                <div class="summary-row">
+                    <span>Subtotal ({{ qtd_itens_cesta }} itens)</span>
+                    <span id="subtotal">R$ {{ subtotal }}</span>
+                </div>
+                <div class="summary-row" style="color: var(--accent-teal);">
+                    <span>Descontos</span>
+                    <span>- R$ 0,00</span>
+                </div>
+        
+                <div class="summary-total">
+                    <span class="total-label">Total</span>
+                    <span class="total-value" id="valor-total">R$ {{ subtotal }}</span>
+                </div>
+        
+                <button class="btn-checkout">Prosseguir para Entrega</button>
+                <a href="{% url 'pagina_principal' %}" class="btn-continue">Continuar Comprando</a>
+        
+            </aside>
+        </div>
+    </div>
+{% endblock %}
+
+{% block categorias_footer %}
+    {% for categoria in categorias %}
+        <li><a href="/?categoria={{ categoria.nome }}">{{ categoria.nome }}</a></li>
+    {% endfor %}
+{% endblock %}

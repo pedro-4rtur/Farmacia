@@ -4,7 +4,7 @@ from django.views.generic import ListView, DetailView
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 import json
-from gestao.models import Sacola, ItemSacola
+from gestao.models import Cesta, ItemCesta
 
 # Create your views here.
 class ListViewProdutos(ListView):
@@ -26,10 +26,10 @@ class ListViewProdutos(ListView):
 
         context["page_obj"] = paginator.get_page(page_number)
         
-        sacola = Sacola.objects.filter(usuario=self.request.user)
-        if sacola:
-            qtd_itens_sacola = ItemSacola.objects.filter(sacola=sacola[0]).count()
-            context['itens_sacola'] = qtd_itens_sacola
+        cesta = Cesta.objects.filter(usuario=self.request.user)
+        if cesta:
+            qtd_itens_cesta = ItemCesta.objects.filter(cesta=cesta[0]).count()
+            context['itens_cesta'] = qtd_itens_cesta
 
         favoritos = Favorito.objects.filter(id_cliente=self.request.user).values_list('id_produto', flat=True)
         context['favoritos'] = list(favoritos)
@@ -46,13 +46,13 @@ class DetailViewProduto(DetailView):
         context['categorias'] = Categoria.objects.all()
         context['comentarios'] = Comentario.objects.filter(produto__nome=context['object'].nome)
 
-        sacola = Sacola.objects.filter(usuario=self.request.user)
-        if sacola:
-            qtd_itens_sacola = ItemSacola.objects.filter(sacola=sacola[0]).count()
-            context['itens_sacola'] = qtd_itens_sacola
+        cesta = Cesta.objects.filter(usuario=self.request.user)
+        if cesta:
+            qtd_itens_cesta = ItemCesta.objects.filter(cesta=cesta[0]).count()
+            context['itens_cesta'] = qtd_itens_cesta
 
         context['adicionado_cesta'] = False
-        if ItemSacola.objects.filter(produto__nome=context['object']):
+        if ItemCesta.objects.filter(produto__nome=context['object']):
             context['adicionado_cesta'] = True
 
         favoritos = Favorito.objects.filter(id_cliente=self.request.user).values_list('id_produto', flat=True)
@@ -74,24 +74,25 @@ def adicionar_cesta(request):
             # 2. Busca o produto
             produto = get_object_or_404(Produto, id=produto_id)
             
-            # 3. Pega (ou cria) a Sacola do usuário logado
-            # O campo no model Sacola é 'usuario', que é um OneToOneField com Cliente (seu user model)
-            sacola, _ = Sacola.objects.get_or_create(usuario=request.user)
+            # 3. Pega (ou cria) a cesta do usuário logado
+            # O campo no model cesta é 'usuario', que é um OneToOneField com Cliente (seu user model)
+            cesta, _ = Cesta.objects.get_or_create(usuario=request.user)
             
-            # 4. Verifica se este produto já existe nesta Sacola (ItemSacola)
-            item, created = ItemSacola.objects.get_or_create(
-                sacola=sacola,
+            # 4. Verifica se este produto já existe nesta Cesta (ItemCesta)
+            item, created = ItemCesta.objects.get_or_create(
+                cesta=cesta,
                 produto=produto
             )
             
             # 5. Se já existia (não foi criado agora), incrementa a quantidade
             if not created:
+                item.quantidade += 1
                 item.save()
                 
             # 6. Calcula o total de itens para atualizar o ícone
             # Aqui somamos as quantidades de todos os itens (ex: 2 dipironas + 1 fralda = 3 itens)
-            # O related_name definido em ItemSacola é 'items'
-            total_itens = sacola.items.count()
+            # O related_name definido em ItemCesta é 'items'
+            total_itens = cesta.items.count()
             
             return JsonResponse({
                 'sucesso': True, 
@@ -112,14 +113,21 @@ def retirar_cesta(request):
         try:
             data = json.loads(request.body)
             produto_id = data.get('produto_id')
-            
-            sacola, _ = Sacola.objects.get_or_create(usuario=request.user)
-            
-            item = get_object_or_404(ItemSacola, sacola=sacola, produto_id=produto_id)
+            delete = data.get('delete')
 
-            item.delete()
+            print(delete)
             
-            total_itens = sacola.items.count()
+            cesta, _ = Cesta.objects.get_or_create(usuario=request.user)
+            
+            item = get_object_or_404(ItemCesta, cesta=cesta, produto_id=produto_id)
+
+            if item.quantidade > 1 and not delete:
+                item.quantidade -= 1
+                item.save()
+            else:
+                item.delete()
+        
+            total_itens = cesta.items.count()
             
             return JsonResponse({
                 'sucesso': True, 
@@ -196,10 +204,10 @@ class ListViewFavorito(ListView):
 
         context["categorias"] = Categoria.objects.all()
         
-        sacola = Sacola.objects.filter(usuario=self.request.user)
-        if sacola:
-            qtd_itens_sacola = ItemSacola.objects.filter(sacola=sacola[0]).count()
-            context['itens_sacola'] = qtd_itens_sacola
+        cesta = Cesta.objects.filter(usuario=self.request.user)
+        if cesta:
+            qtd_itens_cesta = ItemCesta.objects.filter(cesta=cesta[0]).count()
+            context['itens_cesta'] = qtd_itens_cesta
 
         favoritos = Favorito.objects.filter(id_cliente=self.request.user).values_list('id_produto', flat=True)
 
@@ -209,3 +217,4 @@ class ListViewFavorito(ListView):
         context['favoritos'] = list(favoritos)
 
         return context
+    

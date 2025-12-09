@@ -21,14 +21,17 @@ class Cupom(models.Model):
     categoria = models.ManyToManyField(Categoria)
 
 
-class Sacola(models.Model):
+class Cesta(models.Model):
     usuario = models.OneToOneField(Cliente, on_delete=models.CASCADE)
 
 
-class ItemSacola(models.Model):
-    sacola = models.ForeignKey(Sacola, on_delete=models.CASCADE, related_name='items')
+class ItemCesta(models.Model):
+    cesta = models.ForeignKey(Cesta, on_delete=models.CASCADE, related_name='items')
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.IntegerField(default=1)
+
+    def get_total(self):
+        return round(self.produto.valor * self.quantidade, 2)
 
 
 class Pedido(models.Model):
