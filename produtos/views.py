@@ -5,6 +5,8 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 import json
 from gestao.models import Cesta, ItemCesta
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 class ListViewProdutos(ListView):
@@ -22,17 +24,19 @@ class ListViewProdutos(ListView):
         categoria = self.request.GET.get('categoria')
 
         if categoria:
-            paginator = Paginator(Produto.objects.filter(categoria__nome=categoria), qtd_por_pagina)
+            produtosPorCategoria = Produto.objects.filter(categoria__nome=categoria).order_by('id')
+            paginator = Paginator(produtosPorCategoria, qtd_por_pagina)
 
         context["page_obj"] = paginator.get_page(page_number)
         
-        cesta = Cesta.objects.filter(usuario=self.request.user)
-        if cesta:
-            qtd_itens_cesta = ItemCesta.objects.filter(cesta=cesta[0]).count()
-            context['itens_cesta'] = qtd_itens_cesta
+        if self.request.user.is_authenticated:
+            cesta = Cesta.objects.filter(usuario=self.request.user)
+            if cesta:
+                qtd_itens_cesta = ItemCesta.objects.filter(cesta=cesta[0]).count()
+                context['itens_cesta'] = qtd_itens_cesta
 
-        favoritos = Favorito.objects.filter(id_cliente=self.request.user).values_list('id_produto', flat=True)
-        context['favoritos'] = list(favoritos)
+            favoritos = Favorito.objects.filter(id_cliente=self.request.user).values_list('id_produto', flat=True)
+            context['favoritos'] = list(favoritos)
 
         return context
     
@@ -45,18 +49,20 @@ class DetailViewProduto(DetailView):
         context = super().get_context_data(**kwargs)
         context['categorias'] = Categoria.objects.all()
         context['comentarios'] = Comentario.objects.filter(produto__nome=context['object'].nome)
-
-        cesta = Cesta.objects.filter(usuario=self.request.user)
-        if cesta:
-            qtd_itens_cesta = ItemCesta.objects.filter(cesta=cesta[0]).count()
-            context['itens_cesta'] = qtd_itens_cesta
-
         context['adicionado_cesta'] = False
-        if ItemCesta.objects.filter(produto__nome=context['object']):
-            context['adicionado_cesta'] = True
 
-        favoritos = Favorito.objects.filter(id_cliente=self.request.user).values_list('id_produto', flat=True)
-        context['favoritos'] = len(list(favoritos))
+        if self.request.user.is_authenticated:
+            cesta = Cesta.objects.filter(usuario=self.request.user)
+            if cesta:
+                qtd_itens_cesta = ItemCesta.objects.filter(cesta=cesta[0]).count()
+                context['itens_cesta'] = qtd_itens_cesta
+
+            favoritos = Favorito.objects.filter(id_cliente=self.request.user).values_list('id_produto', flat=True)
+            context['favoritos'] = len(list(favoritos))
+
+            if ItemCesta.objects.filter(produto__nome=context['object']):
+                context['adicionado_cesta'] = True
+
 
         return context
     
@@ -195,6 +201,7 @@ def remover_favorito(request):
     return JsonResponse({'sucesso': False, 'erro': 'Método inválido'}, status=400)
 
 
+@method_decorator(login_required(login_url='login'), name='dispatch')
 class ListViewFavorito(ListView):
     model = Favorito
     template_name = 'lista_favoritos.html'

@@ -47,6 +47,7 @@ document.querySelector(".info-produto").addEventListener("click", function(e) {
                 }
             } else {
                 alert('Erro ao adicionar: ' + data.erro);
+                window.location.href = '/login';
             }
         })
         .catch(error => console.error('Erro:', error));

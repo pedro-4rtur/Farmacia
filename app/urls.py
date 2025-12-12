@@ -20,6 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from produtos.views import ListViewProdutos, DetailViewProduto, adicionar_cesta, retirar_cesta, adicionar_favorito, remover_favorito, ListViewFavorito
 from gestao.views import ViewCesta
+from contas.views import login_view, logout_view, register_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,4 +32,7 @@ urlpatterns = [
     path('favoritos', ListViewFavorito.as_view(), name='favoritos'),
     path('favorito/adicionar', adicionar_favorito, name='adicionar_favorito'),
     path('favorito/remover', remover_favorito, name='remover_favorito'),
+    path('login', login_view, name='login'),
+    path('logout', logout_view, name='logout'),
+    path('registrar', register_view, name='registrar')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

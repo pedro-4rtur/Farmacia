@@ -32,5 +32,5 @@ class Comentario(models.Model):
     
 
 class Favorito(models.Model):
-    id_produto = models.OneToOneField(to=Produto, on_delete=models.CASCADE, related_name='produto_favorito')
+    id_produto = models.ForeignKey(to=Produto, on_delete=models.CASCADE, related_name='produto_favorito')
     id_cliente = models.ForeignKey(to="contas.Cliente", on_delete=models.CASCADE, related_name='cliente_favorito')

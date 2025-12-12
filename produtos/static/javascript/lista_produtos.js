@@ -51,6 +51,7 @@ document.querySelector(".container-produtos").addEventListener("click", function
             contagemFavorito.innerHTML = data.contagemFavoritos
         } else {
             alert('Erro ao adicionar: ' + data.erro);
+            window.location.href = "/login";
         }
     })
     .catch(error => console.error('Erro:', error));

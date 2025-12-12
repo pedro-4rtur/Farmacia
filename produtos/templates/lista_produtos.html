@@ -6,7 +6,7 @@
     <script src="{% static 'javascript/lista_produtos.js' %}" defer></script>
 {% endblock %}
 
-{% block favorito %} <span id="contagem-favorito">{{ favoritos|length }}</span> {% endblock %}
+{% block favorito %} <span id="contagem-favorito">{% if favoritos %} {{ favoritos|length }} {% endif %}</span> {% endblock %}
 
 {% block cesta %} <span id="contagem-cesta">{{ itens_cesta }}</span> {% endblock %}
 

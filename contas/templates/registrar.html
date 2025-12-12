@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar</title>
+
+
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+</head>
+<body>
+    <div class="login-container" style="overflow: auto;">
+        <div class="login-form-wrapper" style="flex: 1; max-width: 600px; margin: auto;">
+            <div class="form-content">
+                <div class="form-header">
+                    <h3>Crie sua conta</h3>
+                    <p>Preencha os dados abaixo</p>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% for field in user_form %}
+                    <div class="input-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        <div class="input-wrapper">
+                            {{ field }}
+                        </div>
+                        {% if field.errors %}
+                            <div class="error-msg" style="display:block; color: red; font-size: 0.8rem;">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <button type="submit" class="btn-login">Cadastrar</button>
+                </form>
+
+                <div class="form-footer">
+                    Já tem uma conta? <a href="{% url 'login' %}">Faça login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
