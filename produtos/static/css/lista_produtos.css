@@ -10,7 +10,7 @@ main {
     display: flex;
     flex-wrap: wrap;
     gap: 40px;
-    justify-content: start;
+    justify-content: center;
     justify-items: center;
 }
 

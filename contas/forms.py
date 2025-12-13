@@ -48,5 +48,7 @@ class CustomUserCreationForm(UserCreationForm):
                 field.widget.attrs['rows'] = 3 # Se for Textarea
             elif field_name == 'password1':
                 field.label = 'Senha'
+                field.widget.attrs['placeholder'] = '••••••••'
             elif field_name == 'password2':
                 field.label = 'Confirme sua senha'
+                field.widget.attrs['placeholder'] = '••••••••'
