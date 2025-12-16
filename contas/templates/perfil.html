@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/perfil.css' %}">
+    <script src="{% static 'javascript/perfil.js' %}"></script>
+{% endblock %}
+
+{% block favorito %} <span id="contagem-favorito">{% if favoritos %} {{ favoritos|length }} {% endif %}</span> {% endblock %}
+
+{% block cesta %} <span id="contagem-cesta">{{ itens_cesta }}</span> {% endblock %}
+
+{% if categorias %}
+{% block categorias %}
+    {% for categoria in categorias %}
+        <li><a href="/?categoria={{ categoria.nome }}">{{ categoria.nome }}</a></li>
+    {% endfor %}
+{% endblock %}
+{% endif %}
+
+{% block conteudo %}
+
+    <div class="container dashboard-layout">
+        
+        <aside class="sidebar">
+            <nav>
+                <div class="menu-item">
+                    <div class="menu-link active" data-target="tab-dados">
+                        <i class="bi bi-person"></i> Meus Dados
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-link" data-target="tab-privacidade">
+                        <i class="bi bi-lock"></i> Privacidade
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+
+            {% if messages %}
+                <div class="messages-container">
+                    {% for message in messages %}
+                        <div class="alert {{ message.tags }}">
+                            {% if message.tags == 'success' %}
+                                <i class="bi bi-check-circle-fill"></i>
+                            {% else %}
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                            {% endif %}
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <section id="tab-dados" class="tab-pane {% if active_tab == 'dados' %}active{% endif %}">
+                <h2>Meus Dados Pessoais</h2>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="form-grid">
+                        {% for field in profile_form %}
+                        <div class="input-group {% if field.name == 'username' or field.name == 'endereco' %}full-width{% endif %}">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="error-msg" style="color:red; font-size:0.8rem;">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <br>
+                    <button class="btn" type="submit" name="btn_update_profile">Salvar Alterações</button>
+                </form>
+            </section>
+
+            <section id="tab-privacidade" class="tab-pane {% if active_tab == 'senha' %}active{% endif %}">
+                <h2>Privacidade</h2>
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-grid" style="grid-template-columns: 1fr;">
+                        {% for field in password_form %}
+                            <div class="input-group">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.help_text %}
+                                    <small style="color:#666; font-size:0.75rem;">{{ field.help_text|safe }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <div class="error-msg" style="color:red; font-size:0.8rem;">{{ field.errors }}</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <br>
+                    <button class="btn" type="submit" name="btn_change_password">Atualizar Senha</button>
+                </form>
+            </section>
+
+        </main>
+    </div>
+
+{% endblock %}
+

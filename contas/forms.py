@@ -1,5 +1,17 @@
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from .models import Cliente
+from django import forms
+
+class ClienteUpdateForm(forms.ModelForm):
+    class Meta():
+        model = Cliente
+        fields = ['username', 'email', 'telefone', 'endereco']
+        labels = {
+            "username": "Nome de usuário",
+            "email": "Email",
+            "telefone": "Telefone",
+            "endereco": "Endereço",
+        }
 
 class CustomLoginForm(AuthenticationForm):
     error_messages = {
