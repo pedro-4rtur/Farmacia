@@ -1,10 +1,10 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Produto, Categoria, Comentario, Favorito
 from django.views.generic import ListView, DetailView
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 import json
-from gestao.models import Cesta, ItemCesta
+from gestao.models import Cesta, ItemCesta, Pedido, ItemPedido
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
@@ -18,7 +18,7 @@ class ListViewProdutos(ListView):
         qtd_por_pagina = 24
 
         context["categorias"] = Categoria.objects.all()
-        paginator = Paginator(Produto.objects.all(), qtd_por_pagina)
+        paginator = Paginator(Produto.objects.all().order_by('id'), qtd_por_pagina)
         page_number = self.request.GET.get("page")
 
         categoria = self.request.GET.get('categoria')
@@ -31,12 +31,13 @@ class ListViewProdutos(ListView):
         
         if self.request.user.is_authenticated:
             cesta = Cesta.objects.filter(usuario=self.request.user)
+            context['itens_cesta'] = 0
             if cesta:
                 qtd_itens_cesta = ItemCesta.objects.filter(cesta=cesta[0]).count()
                 context['itens_cesta'] = qtd_itens_cesta
 
             favoritos = Favorito.objects.filter(id_cliente=self.request.user).values_list('id_produto', flat=True)
-            context['favoritos'] = list(favoritos)
+            context['favoritos'] = len(list(favoritos)) if favoritos else 0
 
         return context
     
@@ -53,12 +54,13 @@ class DetailViewProduto(DetailView):
 
         if self.request.user.is_authenticated:
             cesta = Cesta.objects.filter(usuario=self.request.user)
+            context['itens_cesta'] = 0
             if cesta:
                 qtd_itens_cesta = ItemCesta.objects.filter(cesta=cesta[0]).count()
                 context['itens_cesta'] = qtd_itens_cesta
 
             favoritos = Favorito.objects.filter(id_cliente=self.request.user).values_list('id_produto', flat=True)
-            context['favoritos'] = len(list(favoritos))
+            context['favoritos'] = len(list(favoritos)) if favoritos else 0
 
             if ItemCesta.objects.filter(produto__nome=context['object']):
                 context['adicionado_cesta'] = True
@@ -212,6 +214,7 @@ class ListViewFavorito(ListView):
         context["categorias"] = Categoria.objects.all()
         
         cesta = Cesta.objects.filter(usuario=self.request.user)
+        context['itens_cesta'] = 0
         if cesta:
             qtd_itens_cesta = ItemCesta.objects.filter(cesta=cesta[0]).count()
             context['itens_cesta'] = qtd_itens_cesta
@@ -221,7 +224,76 @@ class ListViewFavorito(ListView):
         produtos_favoritos = Produto.objects.filter(id__in=list(favoritos))
 
         context['produtos_favoritos'] = produtos_favoritos
-        context['favoritos'] = list(favoritos)
+        context['favoritos'] = len(list(favoritos)) if favoritos else 0
 
         return context
     
+
+class ListViewPedidos(ListView):
+    model = Produto
+    template_name = 'pedidos.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Geral
+        context["categorias"] = Categoria.objects.all()
+        
+        cesta = Cesta.objects.filter(usuario=self.request.user)
+        context['itens_cesta'] = 0
+        if cesta:
+            qtd_itens_cesta = ItemCesta.objects.filter(cesta=cesta[0]).count()
+            context['itens_cesta'] = qtd_itens_cesta
+
+        favoritos = Favorito.objects.filter(id_cliente=self.request.user).values_list('id_produto', flat=True)
+        context['favoritos'] = len(list(favoritos)) if favoritos else 0
+
+        # Lógica dos pedidos
+        if Pedido.objects.filter(cliente=self.request.user):
+            pedidos = Pedido.objects.filter(cliente=self.request.user).order_by("-data_compra")
+            context['pedidos'] = pedidos
+
+        return context
+
+
+@login_required(login_url='login')
+def confirmar_pedido(request):
+    context = {}
+    context["categorias"] = Categoria.objects.all()
+        
+    cesta = Cesta.objects.filter(usuario=request.user).first()
+    if not cesta or cesta.items.all().count() == 0:
+        return redirect('cesta')
+    context['cesta'] = cesta
+    valor_total = 0
+    for item in cesta.items.all():
+        valor_total += round(item.get_total(), 2)
+    context['valor_total'] = round(valor_total, 2)
+
+    favoritos = Favorito.objects.filter(id_cliente=request.user).values_list('id_produto', flat=True)
+    context['favoritos'] = len(list(favoritos)) if favoritos else 0
+    
+    return render(request, 'confirmar_pedido.html', context=context)
+
+
+@method_decorator(login_required(login_url='login'), name='dispatch')
+class DetalhesPedidoView(DetailView):
+    model = Pedido
+    template_name = 'detalhes_pedido.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Geral
+        context["categorias"] = Categoria.objects.all()
+        
+        cesta = Cesta.objects.filter(usuario=self.request.user)
+        context['itens_cesta'] = 0
+        if cesta:
+            qtd_itens_cesta = ItemCesta.objects.filter(cesta=cesta[0]).count()
+            context['itens_cesta'] = qtd_itens_cesta
+
+        favoritos = Favorito.objects.filter(id_cliente=self.request.user).values_list('id_produto', flat=True)
+        context['favoritos'] = len(list(favoritos)) if favoritos else 0
+
+        return context

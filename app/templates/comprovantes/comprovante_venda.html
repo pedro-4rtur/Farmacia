@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Comprovante de Venda</title>
+    <style>
+        /* CSS específico para impressão/PDF */
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 12px;
+            color: #333;
+            line-height: 1.4;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 24px;
+        }
+        .info-section {
+            display: flex; /* WeasyPrint suporta Flexbox */
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .box {
+            width: 48%;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .box h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 8px;
+            text-align: left;
+        }
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .text-right { text-align: right; }
+        .total-section {
+            text-align: right;
+            margin-top: 20px;
+        }
+        .total-row {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 10px;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>{{ farmacia.nome }}</h1>
+        <p>Tel: {{ farmacia.telefone }}</p>
+    </div>
+
+    <div class="info-section">
+        <div class="box">
+            <h3>Dados do Pedido</h3>
+            <p><strong>Número:</strong> #{{ pedido.id }}</p>
+            <p><strong>Data:</strong> {{ pedido.data_compra|date:"d/m/Y H:i" }}</p>
+            <p><strong>Status:</strong> {{ pedido.get_status_display }}</p>
+        </div>
+        <div class="box" style="margin-left: 4%;">
+            <h3>Dados do Cliente</h3>
+            <p><strong>Nome:</strong> {{ pedido.cliente.username }}</p>
+            <p><strong>Email:</strong> {{ pedido.cliente.email }}</p>
+        </div>
+    </div>
+
+    <h3>Itens da compra</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">Medicamento/Produto</th>
+                <th style="width: 15%;">Qtd.</th>
+                <th style="width: 15%;" class="text-right">Vl. Unit.</th>
+                <th style="width: 20%;" class="text-right">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in itens %}
+            <tr>
+                <td>
+                    {{ item.produto.nome }}
+                </td>
+                <td>{{ item.quantidade }}</td>
+                <td class="text-right">R$ {{ item.preco_unico }}</td>
+                <td class="text-right">R$ {{ item.get_total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total-section">
+        <p>Subtotal: R$ {{ pedido.valor_compra }}</p>
+        <p>Frete: R$ 0</p>
+        <p class="total-row">Total Pago: R$ {{ pedido.valor_compra }}</p>
+    </div>
+
+    <div class="footer">
+        <p>Obrigado pela preferência!</p>
+        <p>Este documento não possui valor fiscal.</p>
+        <p>Gerado automaticamente em {% now "d/m/Y H:i" %}</p>
+    </div>
+
+</body>
+</html>

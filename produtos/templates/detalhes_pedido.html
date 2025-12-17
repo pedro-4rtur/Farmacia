@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}">
+    <link rel="stylesheet" href="{% static 'css/confirmar_pedido.css' %}">
+{% endblock %}
+
+{% block favorito %} 
+    <span id="contagem-favorito">{{ favoritos }}</span> 
+{% endblock %}
+
+{% block cesta %} <span id="contagem-cesta">{{ itens_cesta }}</span> {% endblock %}
+
+{% if categorias %}
+{% block categorias %}
+    {% for categoria in categorias %}
+        <li><a href="/?categoria={{ categoria.nome }}">{{ categoria.nome }}</a></li>
+    {% endfor %}
+{% endblock %}
+{% endif %}
+
+{% block conteudo %}
+    <div class="checkout-grid">
+        <div class="details-column">
+        
+            <section class="checkout-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="bi bi-person-vcard"></i> Dados da Entrega</h2>
+                </div>
+                <div class="address-box">
+                    <span class="address-name">{{ user }}</span>
+                    <i class="bi bi-geo-alt"></i> {{ user.endereco }}
+                    <div style="margin-top: 10px; color: var(--accent-teal); font-weight: 600; font-size: 14px;">
+                        <i class="bi bi-truck"></i> Chega em até 7 dias úteis
+                    </div>
+                </div>
+            </section>
+            <section class="checkout-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="bi bi-basket3"></i> Itens do Pedido ({{ object.pedido_pedido.all.count }})</h2>
+                </div>
+                
+                {% for item in object.pedido_pedido.all %}
+                    <div class="item-row">
+                        <img src="{{ item.produto.imagem.url }}" class="item-img">
+                        <div class="item-info">
+                            <span class="item-name">{{ item.produto.nome }}</span>
+                            <span class="item-meta">Qtd: {{ item.quantidade }}</span>
+                            <span class="item-meta">Preço unitário: R$ {{ item.preco_unico }}</span>
+                        </div>
+                        <div class="item-price">R$ {{ item.get_total }}</div>
+                    </div>
+                {% endfor %}
+            </section>
+        </div>
+        <aside>
+            <div class="summary-card">
+                <h3 style="font-family: 'Montserrat'; margin-bottom: 20px;">Resumo dos valores</h3>
+        
+                <div class="summary-row">
+                    <span>Subtotal ({{ object.pedido_pedido.all.count }} itens)</span>
+                    <span>R$ {{ object.valor_compra }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Frete</span>
+                    <span style="color: var(--verde_secundario);">Grátis</span>
+                </div>
+                <div class="summary-row">
+                    <span>Descontos</span>
+                    <span>- R$ 0,00</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span>R$ {{ object.valor_compra }}</span>
+                </div>
+                <a href="{% url 'comprovante' object.id %}" class="btn-confirm">
+                    <i class="bi bi-arrow-down-circle"></i> Download do Comprovante
+                </a>
+            </div>
+        </aside>
+    </div>
+{% endblock %}
+
+{% block categorias_footer %}
+    {% for categoria in categorias %}
+        <li><a href="/?categoria={{ categoria.nome }}">{{ categoria.nome }}</a></li>
+    {% endfor %}
+{% endblock %}

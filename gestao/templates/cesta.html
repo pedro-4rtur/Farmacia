@@ -77,7 +77,7 @@
                     <span>Subtotal ({{ qtd_itens_cesta }} itens)</span>
                     <span id="subtotal">R$ {{ subtotal }}</span>
                 </div>
-                <div class="summary-row" style="color: var(--accent-teal);">
+                <div class="summary-row" style="color: var(--azul_destaque);">
                     <span>Descontos</span>
                     <span>- R$ 0,00</span>
                 </div>
@@ -87,7 +87,7 @@
                     <span class="total-value" id="valor-total">R$ {{ subtotal }}</span>
                 </div>
         
-                <button class="btn-checkout">Prosseguir para Entrega</button>
+                <a href="{% url 'confirmar_pedido' %}" class="btn-checkout">Prosseguir para Entrega</button>
                 <a href="{% url 'pagina_principal' %}" class="btn-continue">Continuar Comprando</a>
         
             </aside>

@@ -317,7 +317,7 @@ header nav:nth-of-type(2) {
 main {
     display: grid;
     padding: 50px 150px;
-    justify-content: center;
+    justify-content: stretch;
     width: 100%;
 }
 

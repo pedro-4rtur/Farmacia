@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Cupom, Pedido, Cesta, ItemCesta
+from .models import Cupom, Pedido, Cesta, ItemCesta, ItemPedido
 
 # Register your models here.
 class CupomAdmin(admin.ModelAdmin):
@@ -8,8 +8,13 @@ class CupomAdmin(admin.ModelAdmin):
 
 
 class PedidoAdmin(admin.ModelAdmin):
-    list_display = ['cliente', 'valor_compra', 'data_compra']
+    list_display = ['cliente', 'valor_compra', 'data_compra', 'status']
     search_fields = ['cliente']
+
+
+class ItemPedidoAdmin(admin.ModelAdmin):
+    list_display = ['produto', 'pedido', 'quantidade', 'preco_unico']
+    search_fields = ['produto', 'pedido', 'quantidade', 'preco_unico']
 
     
 class CestaAdmin(admin.ModelAdmin):
@@ -24,5 +29,6 @@ class ItemCestaAdmin(admin.ModelAdmin):
 
 admin.site.register(Cupom, CupomAdmin)
 admin.site.register(Pedido, PedidoAdmin)
+admin.site.register(ItemPedido, ItemPedidoAdmin)
 admin.site.register(Cesta, CestaAdmin)
 admin.site.register(ItemCesta, ItemCestaAdmin)

@@ -43,11 +43,17 @@ class Pedido(models.Model):
     status = models.CharField(choices=escolhas, default='P')
     cliente = models.ForeignKey(Cliente, on_delete=models.DO_NOTHING, related_name='pedido_cliente')
     data_compra = models.DateTimeField(auto_now_add=True)
-    valor_compra = models.FloatField()
+    valor_compra = models.FloatField(blank=True, null=True)
 
 
 class ItemPedido(models.Model):
-    produto = models.ForeignKey(Produto, on_delete=models.PROTECT, related_name='produto_pedido')
-    pedido = models.ForeignKey(Pedido, on_delete=models.PROTECT, related_name='pedido_pedido')
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name='produto_pedido')
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='pedido_pedido')
     quantidade = models.IntegerField(default=1)
     preco_unico = models.FloatField()
+
+    def __str__(self):
+        return f'Produto: {self.produto.nome} \nPedido: {self.pedido} \nQuantidade = {self.quantidade} \nPreço único: {self.preco_unico}'
+    
+    def get_total(self):
+        return round(self.preco_unico * self.quantidade, 2)

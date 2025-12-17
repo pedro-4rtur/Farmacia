@@ -221,7 +221,7 @@
 
 .btn-checkout {
     width: 100%;
-    background-color: var(--accent-teal); /* Azul Petróleo */
+    background-color: var(--azul_destaque); /* Azul Petróleo */
     color: var(--white);
     border: none;
     padding: 15px;
@@ -231,6 +231,9 @@
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
     box-shadow: 0 4px 10px rgba(0, 152, 166, 0.3);
+    text-align: center;
+    display: block;
+    text-decoration: none;
 }
 
 .btn-checkout:hover {
@@ -242,7 +245,7 @@
     display: block;
     text-align: center;
     margin-top: 15px;
-    color: var(--accent-teal);
+    color: var(--azul_destaque);
     font-weight: 600;
     font-size: 14px;
 }

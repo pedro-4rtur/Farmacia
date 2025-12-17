@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/confirmar_pedido.css' %}">
+    <script src="{% static 'javascript/confirmar_pedido.js' %}" defer></script>
+{% endblock %}
+
+{% block favorito %} 
+    <span id="contagem-favorito">{{ favoritos }}</span> 
+{% endblock %}
+
+{% block cesta %} <span id="contagem-cesta">{{ cesta.items.all.count }}</span> {% endblock %}
+
+{% block categorias %}
+    {% for categoria in categorias %}
+        <li><a href="/?categoria={{ categoria.nome }}">{{ categoria.nome }}</a></li>
+    {% endfor %}
+{% endblock %}
+
+{% block conteudo %}
+    <div id="orderConfirmationModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="closeModal()">
+                <i class="bi bi-times"></i>
+            </button>
+
+            <div class="modal-icon">
+                <i class="bi bi-check"></i>
+            </div>
+
+            <h2 class="modal-title">Pedido Confirmado!</h2>
+            <p class="modal-message">
+                Obrigado, <strong>{{ user }}</strong>! Seu pedido foi recebido com sucesso.
+            </p>
+
+            <div class="modal-summary">
+                <div class="summary-item">
+                    <span>Total Pago:</span>
+                    <span class="highlight">R$ {{ valor_total }}</span>
+                </div>
+                <div class="summary-item">
+                    <span>Previsão:</span>
+                    <span>Chega em até 7 dias úteis</span>
+                </div>
+            </div>
+
+            <p class="email-notice">Enviamos os detalhes para seu e-mail.</p>
+
+            <div class="modal-actions">
+                <a href="{% url 'pedidos' %}" class="btn-track-order">Acompanhar Pedido</a>
+                <a href="{% url 'pagina_principal' %}" class="btn-back-home" onclick="closeModal()">Voltar para a Loja</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="checkout-grid">
+        <div class="details-column">
+        
+            <h1 style="font-family: 'Montserrat'; margin-bottom: 20px;">Revise seu pedido</h1>
+            <section class="checkout-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="bi bi-person-vcard"></i> Dados da Entrega</h2>
+                    <a href="{% url 'perfil' %}" class="btn-change">Alterar</a>
+                </div>
+                <div class="address-box">
+                    <span class="address-name">{{ user }}</span>
+                    <i class="bi bi-geo-alt"></i> {{ user.endereco }}
+                    <div style="margin-top: 10px; color: var(--accent-teal); font-weight: 600; font-size: 14px;">
+                        <i class="bi bi-truck"></i> Chega em até 7 dias úteis
+                    </div>
+                </div>
+            </section>
+            <section class="checkout-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="bi bi-basket3"></i> Itens do Pedido ({{ cesta.items.all.count }})</h2>
+                    <a href="{% url 'cesta' %}" class="btn-change">Editar Cesta</a>
+                </div>
+                
+                {% if cesta %}
+                    {% for item in cesta.items.all %}
+                        <div class="item-row">
+                            <img src="{{ item.produto.imagem.url }}" class="item-img">
+                            <div class="item-info">
+                                <span class="item-name">{{ item.produto.nome }}</span>
+                                <span class="item-meta">Qtd: {{ item.quantidade }}</span>
+                            </div>
+                            <div class="item-price">R$ {{ item.get_total }}</div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </section>
+        </div>
+        <aside>
+            <div class="summary-card">
+                <h3 style="font-family: 'Montserrat'; margin-bottom: 20px;">Resumo dos valores</h3>
+        
+                <div class="summary-row">
+                    <span>Subtotal ({{ cesta.items.all.count }} itens)</span>
+                    <span>R$ {{ valor_total }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Frete</span>
+                    <span style="color: var(--verde_secundario);">Grátis</span>
+                </div>
+                <div class="summary-row">
+                    <span>Descontos</span>
+                    <span>- R$ 0,00</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span>R$ {{ valor_total }}</span>
+                </div>
+                <button class="btn-confirm" onclick="finalizarPedido()">
+                    <i class="bi bi-check"></i> FINALIZAR PEDIDO
+                </button>
+                <p class="policy-text">
+                    Ao confirmar a compra, você concorda com nossos <a href="#">Termos de Uso</a> e <a href="#">Política de Privacidade</a>.
+                </p>
+            </div>
+        </aside>
+    </div>
+{% endblock %}
+
+{% block categorias_footer %}
+    {% for categoria in categorias %}
+        <li><a href="/?categoria={{ categoria.nome }}">{{ categoria.nome }}</a></li>
+    {% endfor %}
+{% endblock %}

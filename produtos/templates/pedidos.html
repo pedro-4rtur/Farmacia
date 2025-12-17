@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}">
+    <link rel="stylesheet" href="{% static 'css/detalhes_produto.css' %}">
+    <script src="{% static 'javascript/pedidos.js' %}" defer></script>
+{% endblock %}
+
+{% block favorito %} 
+    <span id="contagem-favorito">{{ favoritos }}</span> 
+{% endblock %}
+
+{% block cesta %} <span id="contagem-cesta">{{ itens_cesta }}</span> {% endblock %}
+
+{% if categorias %}
+{% block categorias %}
+    {% for categoria in categorias %}
+        <li><a href="/?categoria={{ categoria.nome }}">{{ categoria.nome }}</a></li>
+    {% endfor %}
+{% endblock %}
+{% endif %}
+
+{% block conteudo %}
+    <div class="rota">
+        <nav>
+            <li><a href="{% url 'pagina_principal' %}">Início</a></li>
+            <li><i class="bi bi-chevron-right"></i></li>
+            <li><a href="#">Pedidos</a></li>
+        </nav>
+    </div>
+
+    <div id="ordersList">
+
+        {% for pedido in pedidos %}
+            <div class="order-group-date">{{ pedido.data_compra|date:"d \d\e F \d\e Y" }}</div>
+            {% for item in pedido.pedido_pedido.all %}
+                <article class="order-card">
+                    <img src="{{ item.produto.imagem.url }}" alt="Produto" class="product-img">
+                    
+                    <div class="order-details">
+                        <div class="order-status status-delivered">
+                            {% if pedido.status == 'P' %}
+                                <i class="bi bi-clock-history"></i>
+                            {% elif pedido.status == 'E' %}
+                                <i class="bi bi-check-circle"></i>
+                            {% else %}
+                                <i class="bi bi-x-circle"></i>
+                            {% endif %}
+                            {{ pedido.get_status_display }}
+                        </div>
+                        <a href="{% url 'pagina_produto' item.produto.pk %}" class="product-title">{{ item.produto.nome }}</a>
+                        <div class="product-info">Unidades: {{ item.quantidade }}</div>
+                    </div>
+
+                    <div class="order-actions">
+                        <a href="#" class="btn-action btn-primary">Comentário</a>
+                        <a href="{% url 'detalhes_pedido' pedido.id %}" class="btn-action btn-secondary" data-pedido-id="{{ pedido.id }}">Detalhes do pedido</a>
+                    </div>
+                </article>
+            {% endfor %}
+        {% empty %}
+            <h3>Você ainda não tem nenhum pedido 😓</h3>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block categorias_footer %}
+    {% for categoria in categorias %}
+        <li><a href="/?categoria={{ categoria.nome }}">{{ categoria.nome }}</a></li>
+    {% endfor %}
+{% endblock %}

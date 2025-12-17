@@ -18,14 +18,19 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from produtos.views import ListViewProdutos, DetailViewProduto, adicionar_cesta, retirar_cesta, adicionar_favorito, remover_favorito, ListViewFavorito
-from gestao.views import ViewCesta
+from produtos.views import ListViewProdutos, DetailViewProduto, adicionar_cesta, retirar_cesta, adicionar_favorito, remover_favorito, ListViewFavorito, ListViewPedidos, confirmar_pedido, DetalhesPedidoView
+from gestao.views import ViewCesta, criar_pedido, gerar_comprovante_pdf
 from contas.views import login_view, logout_view, register_view, perfil_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', ListViewProdutos.as_view(), name='pagina_principal'),
     path('<int:pk>/', DetailViewProduto.as_view(), name='pagina_produto'),
+    path('pedidos', ListViewPedidos.as_view(), name='pedidos'),
+    path('pedidos/confirmar-pedido', confirmar_pedido, name='confirmar_pedido'),
+    path('pedidos/criar-pedido', criar_pedido, name='criar_pedido'),
+    path('pedidos/detalhes-pedido/<int:pk>', DetalhesPedidoView.as_view(), name='detalhes_pedido'),
+    path('pedidos/detalhes_pedido/<int:pk>/comprovante', gerar_comprovante_pdf, name='comprovante'),
     path('cesta', ViewCesta.as_view(), name='cesta'),
     path('cesta/adicionar', adicionar_cesta, name="adicionar_cesta"),
     path('cesta/remover', retirar_cesta, name='remover_cesta'),

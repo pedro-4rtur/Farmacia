@@ -47,7 +47,7 @@ botoesQuantidade.forEach((botao) => {
             .then(response => response.json())
             .then(data => {
                 if (data.sucesso) {
-                    precoUnitario = Number.parseFloat(inputQuantidade.dataset.precoUnitario);
+                    precoUnitario = Number.parseFloat(inputQuantidade.dataset.precoUnitario).toFixed(2);
                     quantidade = Number.parseInt(inputQuantidade.value);
                     valorTotal = (precoUnitario * quantidade).toFixed(2);
 
@@ -85,13 +85,22 @@ itens.forEach((item) => {
         .then(response => response.json())
         .then(data => {
             if (data.sucesso) {
-                item.style.display = "none";
+                item.remove();
 
-                // Atualiza o ícone do carrinho no cabeçalho (se houver um contador)
-                const contador = document.getElementById('contagem-cesta');
-                if (contador) {
-                    contador.innerText = data.novo_total_itens;
-                }
+                let precoString = inputQuantidade.dataset.precoUnitario;
+                let precoUnitario = parseFloat(precoString.replace(',', '.')); 
+
+                quantidade = Number.parseInt(inputQuantidade.value);
+                
+                // Calcula o valor total numérico
+                let valorCalculado = precoUnitario * quantidade;
+                
+                // CORREÇÃO 2: Formatar com vírgula antes de devolver para a tela
+                // Isso garante que o atualizarSubtotal consiga ler corretamente depois
+                let valorTotalFormatado = valorCalculado.toFixed(2).replace('.', ',');
+
+                saidaTotal = e.target.closest('.cart-item').querySelector(".item-total-price");
+                saidaTotal.innerHTML = `R$ ${valorTotalFormatado}`;
 
                 atualizarSubtotal();
             } else {
@@ -106,11 +115,23 @@ function atualizarSubtotal() {
     let totais = document.querySelectorAll(".item-total-price");
     let total = 0;
     totais.forEach((totalIndividual) => {
-        let valor = totalIndividual.innerHTML.replace(/,/g, '').replace(/[^\d.]/g, '');
-        total += parseFloat(valor);
+        // Pega o texto (ex: "R$ 1.200,50")
+        let valorTexto = totalIndividual.innerText;
+        
+        // 1. Remove "R$" e espaços
+        // 2. Remove pontos de milhar (ex: 1.200 -> 1200)
+        // 3. Troca vírgula decimal por ponto (ex: ,50 -> .50)
+        let valorLimpo = valorTexto.replace(/R\$\s?/, '')
+                                   .replace(',', '.');
+                                   
+        total += parseFloat(valorLimpo);
     })
+    console.log(total);
+    // Formata o total final de volta para o padrão brasileiro (ex: 1200.50 -> 1.200,50)
+    let totalFormatado = total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
     let subtotal = document.getElementById('subtotal');
     let valorTotal = document.getElementById('valor-total');
-    subtotal.innerHTML = `R$ ${total.toFixed(2)}`;
-    valorTotal.innerHTML = `R$ ${total.toFixed(2)}`;
+    subtotal.innerHTML = `R$ ${totalFormatado}`;
+    valorTotal.innerHTML = `R$ ${totalFormatado}`;
 }
