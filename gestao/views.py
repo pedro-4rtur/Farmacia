@@ -74,6 +74,8 @@ def criar_pedido(request):
             item_pedido.pedido = pedido
             item_pedido.quantidade = item.quantidade
             item_pedido.preco_unico = item.produto.valor
+            item_pedido.produto.quantidade -= item_pedido.quantidade
+            item_pedido.produto.save()
 
             item_pedido.save()
 
@@ -121,3 +123,7 @@ def gerar_comprovante_pdf(request, pk):
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
     return response
+
+
+def dashboard_view(request):
+    return render(request, template_name='dashboard.html')
