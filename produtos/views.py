@@ -18,13 +18,14 @@ class ListViewProdutos(ListView):
         qtd_por_pagina = 24
 
         context["categorias"] = Categoria.objects.all()
-        paginator = Paginator(Produto.objects.all().order_by('id'), qtd_por_pagina)
+        produtos_validos = Produto.objects.filter(quantidade__gt=0)
+        paginator = Paginator(produtos_validos.order_by('id'), qtd_por_pagina)
         page_number = self.request.GET.get("page")
 
         categoria = self.request.GET.get('categoria')
 
         if categoria:
-            produtosPorCategoria = Produto.objects.filter(categoria__nome=categoria).order_by('id')
+            produtosPorCategoria = produtos_validos.filter(categoria__nome=categoria).order_by('id')
             paginator = Paginator(produtosPorCategoria, qtd_por_pagina)
 
         context["page_obj"] = paginator.get_page(page_number)
