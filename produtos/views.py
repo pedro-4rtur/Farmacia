@@ -228,9 +228,6 @@ class ListViewFavorito(ListView):
 
         favoritos = Favorito.objects.filter(id_cliente=self.request.user).values_list('id_produto', flat=True)
 
-        produtos_favoritos = Produto.objects.filter(id__in=list(favoritos))
-
-        context['produtos_favoritos'] = produtos_favoritos
         context['favoritos'] = len(list(favoritos)) if favoritos else 0
 
         return context
