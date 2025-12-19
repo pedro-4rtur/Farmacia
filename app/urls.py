@@ -19,7 +19,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from produtos.views import ListViewProdutos, DetailViewProduto, adicionar_cesta, retirar_cesta, adicionar_favorito, remover_favorito, ListViewFavorito, ListViewPedidos, confirmar_pedido, DetalhesPedidoView
-from gestao.views import ViewCesta, criar_pedido, gerar_comprovante_pdf
+from gestao.views import ViewCesta, criar_pedido, gerar_comprovante_pdf, dashboard_view, GestaoPedidosView, GestaoProdutosListView, GestaoUpdateProduto, DetalhesProduto, DeleteProduto, GestaoDetalhesPedido, confirmar_entrega
 from contas.views import login_view, logout_view, register_view, perfil_view
 
 urlpatterns = [
@@ -40,5 +40,13 @@ urlpatterns = [
     path('login', login_view, name='login'),
     path('logout', logout_view, name='logout'),
     path('registrar', register_view, name='registrar'),
-    path('perfil', perfil_view, name='perfil')
+    path('perfil', perfil_view, name='perfil'),
+    path('gestao/dashboard', dashboard_view, name='dashboard'),
+    path('gestao/pedidos', GestaoPedidosView.as_view(), name='gestao_pedidos'),
+    path('gestao/pedidos/<int:pk>', GestaoDetalhesPedido.as_view(), name='gestao_detalhes_pedido'),
+    path('gestao/pedidos/<int:pk>/confirmar-entrega', confirmar_entrega, name='alterar_status'),
+    path('gestao/produtos', GestaoProdutosListView.as_view(), name='gestao_produtos'),
+    path('gestao/produtos/<int:pk>', DetalhesProduto.as_view(), name='gestao_detalhes_produto'),
+    path('gestao/produtos/<int:pk>/delete', DeleteProduto.as_view(), name='delete_produto'),
+    path('gestao/produtos/<int:pk>/update', GestaoUpdateProduto.as_view(), name='edicao_produto')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

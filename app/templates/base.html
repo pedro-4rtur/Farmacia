@@ -31,7 +31,7 @@
             <li><a href="{% url 'cesta' %}"><i class="bi bi-basket3">{% block cesta %}{% endblock %}</i></a></li>
 
             {% if user.is_staff %}
-                <li><a href="#"><i class="bi bi-kanban"></i></a></li>
+                <li><a href="{% url 'dashboard' %}"><i class="bi bi-kanban"></i></a></li>
             {% endif %}
 
             {% if user.is_authenticated %}
@@ -78,7 +78,7 @@
             {% if user.is_staff %}
                 <div class="menu-section-title">Gerenciamento</div>
                 <ul class="menu-list">
-                    <li><a href="#" class="menu-link"><i class="bi bi-kanban"></i>Gerenciar</a></li>
+                    <li><a href="{% url 'dashboard' %}" class="menu-link"><i class="bi bi-kanban"></i>Gerenciar</a></li>
                 </ul>
             {% endif %}
         </div>

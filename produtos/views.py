@@ -284,6 +284,7 @@ class DetalhesPedidoView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['object'].valor_compra = round(context['object'].valor_compra, 2)
 
         # Geral
         context["categorias"] = Categoria.objects.all()

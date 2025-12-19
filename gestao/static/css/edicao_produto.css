@@ -1,0 +1,19 @@
+.input-field {
+    padding: 5px;
+    width: 70%;
+    border-radius: 7px;
+    border: 1px solid var(--border-color);
+}
+
+.page-title {
+    width: 100%;
+}
+
+.page-title > .input-field {
+    width: 100%;
+    font-size: 1.5rem;
+}
+
+.description-box > .input-field {
+    width: 100%;
+}

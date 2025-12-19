@@ -1,0 +1,105 @@
+{% extends 'gestao_base.html' %}
+{% load static %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/gestao_detalhes_produto.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/gestao_produtos.css' %}">
+    <link rel="stylesheet" href="{% static 'css/gestao_detalhes_pedido.css' %}">
+{% endblock %}
+
+{% block conteudo%}
+    <div class="top-header">
+        <div>
+            <h1 class="page-title">
+                Pedido n° {{ object.id }}
+            </h1>
+        </div>
+
+        <div class="header-actions">
+            <a href="{% url 'gestao_pedidos' %}" class="btn"><i class="fa-solid fa-reply"></i> Voltar</a>
+            {% if object.status == "P" %}
+                <a href="{% url 'alterar_status' object.pk %}" class="btn btn-green"><i class="bi bi-check-circle"></i> Marcar como entregue </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="product-grid">
+        <div class="panel">
+            <div class="panel-header">
+                <h3 class="panel-title">Produtos do Pedido</h3>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Imagem</th>
+                            <th>Nome</th>
+                            <th>Preço Único</th>
+                            <th>Quantidade</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for produto in object.pedido_pedido.all %}
+                            <tr>
+                                <td><img src="{{ produto.produto.imagem.url }}" alt="{{ produto.produto.nome }}"></td>
+                                <td>{{ produto.produto.nome }}</td>
+                                <td>R$ {{ produto.preco_unico }}</td>
+                                <td style="text-align: center;">{{ produto.quantidade }}</td>
+                                <td>{{ produto.get_total }}</td>
+                            </tr>
+                        {% empty %}
+                            <h3>Não era pra você ver isso</h3>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="card">
+                <h3 class="card-title">Informações Gerais</h3>
+                
+                <div class="info-row">
+                    <div class="info-group">
+                        <label>Número do Pedido</label>
+                        <p>{{ object.pk }}</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Cliente</label>
+                        <p>{{ object.cliente }}</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Quantidade de itens</label>
+                        <p>{{ object.pedido_pedido.all.count }}</p>
+                    </div>
+                </div>
+                <div class="info-row" style="grid-template-columns: 1fr 1fr;">
+                    <div class="info-group">
+                        <label>Valor Total da Compra</label>
+                        <p>R$ {{ object.valor_compra }}</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Status</label>
+                        <span class="status-badge status-{% if object.status == 'P' %}warning{% elif object.status == 'C' %}danger{% else %}success{% endif %}">
+                        {% if object.status == 'P' %}
+                            Pendente
+                        {% elif object.status == 'C' %}
+                            Cancelado
+                        {% else %}
+                            Enviado
+                        {% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="info-row" style="grid-template-columns: 1fr;">
+                    <div class="info-group">
+                        <label>Data da Compra</label>
+                        <p>{{ object.data_compra }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

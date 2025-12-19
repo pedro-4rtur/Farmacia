@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | GreenMed+</title>
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/gestao_base.css' %}">
+    <script src="{% static 'javascript/gestao_base.js' %}" defer></script>
+
+    {% block links %} {% endblock %}
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{% url 'pagina_principal' %}" class="logo">
+                <img src="{% static 'images/logo_footer.png' %}" alt="Logo GreeMed+">
+            </a>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="{% url 'dashboard' %}" {% if pagina == "dashboard" %} class="active" {% endif %}><i class="fas fa-chart-line"></i> Dashboard</a>
+            </li>
+            <li class="menu-item">
+                <a href="{% url 'gestao_produtos' %}" {% if pagina == "produtos" %} class="active" {% endif %}><i class="fas fa-pills"></i> Produtos</a>
+            </li>
+            <li class="menu-item">
+                <a href="{% url 'gestao_pedidos' %}" {% if pagina == "pedidos" %} class="active" {% endif %}><i class="fas fa-shopping-basket"></i> Pedidos</a>
+            </li>
+            <li class="menu-item">
+                <a href="{% url 'pagina_principal' %}"><i class="fas fa-arrow-right-from-bracket"></i> Voltar à farmácia</a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        {% block conteudo %} {% endblock %}
+    </main>
+</body>
+</html>

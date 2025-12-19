@@ -1,0 +1,87 @@
+{% extends 'gestao_base.html' %}
+{% load static %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/gestao_detalhes_produto.css' %}">
+    <link rel="stylesheet" href="{% static 'css/edicao_produto.css' %}">
+{% endblock %}
+
+{% block conteudo%}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="top-header">
+            <div class="page-title">
+                {{ form.nome }}
+            </div>
+
+            <div class="header-actions">
+                <a href="{% url 'gestao_detalhes_produto' object.pk %}" class="btn"><i class="fa-solid fa-reply"></i> Voltar</a>
+                <a href="{% url 'delete_produto' object.pk %}" class="btn btn-danger"><i class="far fa-trash-alt"></i> Excluir</a>
+                <button type="submit" class="btn btn-green"><i class="far fa-edit"></i> Salvar</button>
+            </div>
+        </div>
+
+        <div class="product-grid">
+            
+            <div>
+                <div class="card">
+                    <div class="product-image-container">
+                        <img src="{{ object.imagem.url }}" alt="Produto">
+                    </div>
+                </div>
+                <label>Alterar Imagem:</label>
+                {{ form.imagem }}
+            </div>
+
+            <div>
+                <div class="card">
+                    <h3 class="card-title">Informações Gerais</h3>
+                    
+                    <div class="info-row">
+                        <div class="info-group">
+                            <label>Quantidade em Estoque</label>
+                            {{ form.quantidade }}
+                        </div>
+                        <div class="info-group">
+                            <label>Valor</label>
+                            <p>R$ {{ form.valor }}</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Categoria</label>
+                            <p>{{ form.categoria }}</p>
+                        </div>
+                    </div>
+
+                    <div class="info-group">
+                        <label>Descrição Curta (Site)</label>
+                        <div class="description-box">
+                            {{ form.descricao }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        const inputImagem = document.getElementById('id_imagem');
+        const imgPreview = document.querySelector('.card img');
+
+        if (inputImagem && imgPreview) {
+            inputImagem.addEventListener('change', function(event) {
+                const arquivo = event.target.files[0];
+                if (arquivo) {
+                    const leitor = new FileReader();
+                    
+                    leitor.onload = function(e) {
+                        imgPreview.src = e.target.result; // Troca a imagem antiga pela nova
+                    }
+                    
+                    leitor.readAsDataURL(arquivo);
+                }
+            });
+        }
+    </script>
+
+{% endblock %}

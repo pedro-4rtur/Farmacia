@@ -1,6 +1,6 @@
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import View
-from produtos.models import Produto, Categoria, Favorito
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import View, ListView, UpdateView, DetailView, DeleteView
+from produtos.models import Categoria, Favorito, Produto
 from .models import Cesta, ItemCesta, Pedido, ItemPedido
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -8,6 +8,9 @@ import json
 from django.http import JsonResponse, HttpResponse
 from weasyprint import HTML
 from django.template.loader import render_to_string
+from django.utils import timezone
+from produtos.forms import ProdutoModelForm
+from django.urls import reverse_lazy
 
 # Create your views here.
 @method_decorator(login_required(login_url='login'), name='dispatch')
@@ -125,5 +128,104 @@ def gerar_comprovante_pdf(request, pk):
     return response
 
 
+login_required(login_url='login')
 def dashboard_view(request):
-    return render(request, template_name='dashboard.html')
+    context = {}
+    vendas_hoje = 0
+    pedidos_pendentes = 0
+    vendas_mes = 0
+
+    vendas = Pedido.objects.all().order_by("-data_compra")
+
+    data_atual = timezone.now()
+    data_local = timezone.localtime(data_atual)
+    data_hoje = data_local.date()
+    mes_atual = data_local.month
+
+    for pedido in vendas:
+        if data_hoje == pedido.data_compra.date():
+            vendas_hoje += pedido.valor_compra
+        if pedido.status == 'P':
+            pedidos_pendentes += 1
+        if mes_atual == pedido.data_compra.month:
+            vendas_mes += pedido.valor_compra
+
+    context['vendas_hoje'] = round(vendas_hoje, 2)
+    context['pedidos_pendentes'] = pedidos_pendentes
+    context['vendas_mes'] = round(vendas_mes, 2)
+    context['pedidos'] = vendas[:10]
+
+    url = request.path.split('/')
+    pagina_atual = url[len(url)-1]
+    context['pagina'] = pagina_atual
+
+    return render(request, template_name='dashboard.html', context=context)
+
+
+@method_decorator(login_required(login_url='login'), name='dispatch')
+class GestaoPedidosView(ListView):
+    model = Pedido
+    template_name = 'gestao_pedidos.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object_list'] = context['object_list'].order_by("-id")
+
+        url = self.request.path.split('/')
+        pagina_atual = url[len(url)-1]
+        context['pagina'] = pagina_atual
+
+        return context
+    
+
+@method_decorator(login_required(login_url='login'), name='dispatch')
+class GestaoProdutosListView(ListView):
+    model = Produto
+    template_name = 'gestao_produtos.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object_list'] = context['object_list'].order_by("-id")
+
+        url = self.request.path.split('/')
+        pagina_atual = url[len(url)-1]
+        context['pagina'] = pagina_atual
+
+        return context
+    
+
+@method_decorator(login_required(login_url='login'), name='dispatch')
+class DetalhesProduto(DetailView):
+    model = Produto
+    template_name = 'gestao_detalhes_produto.html'
+
+
+@method_decorator(login_required(login_url='login'), name='dispatch')
+class DeleteProduto(DeleteView):
+    model = Produto
+    template_name = 'delete_produto.html'
+    success_url = '/gestao/produtos'
+
+
+@method_decorator(login_required(login_url='login'), name="dispatch")
+class GestaoUpdateProduto(UpdateView):
+    model = Produto
+    template_name = 'edicao_produto.html'
+    form_class = ProdutoModelForm
+
+    def get_success_url(self):
+        return reverse_lazy('gestao_detalhes_produto', kwargs={'pk': self.object.pk})
+
+
+@method_decorator(login_required(login_url='login'), name='dispatch')
+class GestaoDetalhesPedido(DetailView):
+    model = Pedido
+    template_name = 'gestao_detalhes_pedido.html'
+
+
+@login_required(login_url='login')
+def confirmar_entrega(request, pk):
+    pedido = Pedido.objects.filter(pk=pk).first()
+    pedido.status = 'E'
+    pedido.save()
+    return redirect('gestao_pedidos')

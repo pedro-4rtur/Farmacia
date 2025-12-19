@@ -1,0 +1,96 @@
+{% extends 'gestao_base.html' %}
+{% load static %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+
+{% block conteudo %}
+
+    <div class="top-bar">
+        <button id="sidebarToggle" style="background:none; border:none; font-size:20px; cursor:pointer; color: #333; display: none;">
+            <i class="fas fa-bars"></i>
+        </button>
+        <h1 class="page-title">Visão Geral</h1>
+        
+        <div class="admin-profile">
+            <div class="admin-info">
+                <span class="admin-name">{{ user.username }}</span>
+            </div>
+            <div class="admin-avatar">
+                <i class="bi bi-person"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-info">
+                <h3>Vendas Hoje</h3>
+                <div class="value">R$ {{ vendas_hoje }}</div>
+            </div>
+            <div class="metric-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+        </div>
+
+        <div class="metric-card card-blue">
+            <div class="metric-info">
+                <h3>Vendas do mês</h3>
+                <div class="value">R$ {{ vendas_mes }}</div>
+            </div>
+            <div class="metric-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+        </div>
+
+        <div class="metric-card card-orange">
+            <div class="metric-info">
+                <h3>Pedidos Pendentes</h3>
+                <div class="value">{{ pedidos_pendentes }}</div>
+            </div>
+            <div class="metric-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-split">
+        
+        <div class="panel">
+            <div class="panel-header">
+                <h3 class="panel-title">Últimos Pedidos</h3>
+                <a href="{% url 'gestao_pedidos' %}" class="btn-sm">Ver Todos</a>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pedido in pedidos %}
+                            <tr>
+                                <td>#{{ pedido.id }}</td>
+                                <td>{{ pedido.cliente }}</td>
+                                <td><span class="status-badge status-{% if pedido.status == 'P' %}warning{% elif pedido.status == 'C' %}danger{% else %}success{% endif %}">{{ pedido.get_status_display }}</span></td>
+                                <td>R$ {{ pedido.valor_compra }}</td>
+                                <td><button class="action-btn" disabled><i class="fas fa-eye"></i></button></td>
+                            </tr>
+                        {% empty %}
+                            <h3>Sem pedidos por enquanto 😓</h3>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

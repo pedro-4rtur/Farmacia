@@ -32,7 +32,13 @@
                     <span class="address-name">{{ user }}</span>
                     <i class="bi bi-geo-alt"></i> {{ user.endereco }}
                     <div style="margin-top: 10px; color: var(--accent-teal); font-weight: 600; font-size: 14px;">
-                        <i class="bi bi-truck"></i> Chega em até 7 dias úteis
+                        {% if object.status == 'P' %}
+                            <i class="bi bi-truck"></i> Chega em até 7 dias úteis
+                        {% elif object.status == 'C' %}
+                            <i class="bi bi-x-circle"></i> Cancelado
+                        {% else %}
+                            <i class="bi bi-check-circle"></i> Entregue
+                        {% endif %}
                     </div>
                 </div>
             </section>
