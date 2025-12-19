@@ -22,6 +22,12 @@ class ListViewProdutos(ListView):
         paginator = Paginator(produtos_validos.order_by('id'), qtd_por_pagina)
         page_number = self.request.GET.get("page")
 
+        search = self.request.GET.get('search')
+
+        if search:
+            produtosBusca = produtos_validos.filter(nome__icontains=search).order_by('id')
+            paginator = Paginator(produtosBusca, qtd_por_pagina)
+
         categoria = self.request.GET.get('categoria')
 
         if categoria:
